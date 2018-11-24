@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Calculadora de médias harmônica e geometrica</title>
+		<link rel="stylesheet" href="./style.css" />
+	</head>
+
+	<body>
+		<h3>Insira os números para o cáluclo das médias</h3>
+		<section class="fields">
+			<input type="number" />
+			<input type="number" />
+		</section>
+		
+		<section class="result">
+			<div hidden>
+				<img src="./nazare.jpg" />
+				<div>
+					<strong>Média harmônica:</strong>  
+					<p readonly id="harmonica"></p>
+				</div>
+				<div>
+					<strong>Média geometrica:</strong> 
+					<p readonly id="geometrica"></p>
+				</div>
+			</div>
+		</section>
+		
+		<button id="calc">Calcular</button>
+		
+		<script>
+			const mediaHarmonica = numbers => {
+				const soma = numbers.reduce((accum, value) => accum + (1 / value), 0);
+				return Number.prototype.toFixed.apply(numbers.length / soma, [2]);
+			}
+			
+			const mediaGeometrica = numbers => {
+				if(numbers.some(n => n < 0)) 
+					return "Não é possível o cálculo de números negativos!";
+
+				const produto = numbers.reduce((accum, value) => accum * value, 1);
+				return Number.prototype.toFixed.apply(Math.pow(produto, 1 / numbers.length), [2]);
+			}
+		</script>
+		
+		<script>
+			const addListenerInLastInput = () => {
+				const lastInput = document.querySelector('input[type=number]:last-child');
+				lastInput.addEventListener('input', createInput);
+			}
+			
+			const removeListener = () => {
+				const lastInput = document.querySelector('input[type=number]:last-child');
+				lastInput.removeEventListener('input', createInput);
+			}
+			
+			const createInput = () => {
+				removeListener();
+				
+				const input = document.createElement('input');
+				input.type = 'number';
+				
+				document.querySelector('.fields').append(input);
+				
+				addListenerInLastInput()
+			}
+			
+			addListenerInLastInput();
+			
+			calc.addEventListener('click', e => {
+				const inputs = document.querySelectorAll('input[type=number]');
+				let numeros = [];
+				
+				for(const { value } of inputs){
+					if(value.length === 0) continue;
+					numeros.push(parseInt(value));
+				}
+				if(numeros.length === 0) return;
+				
+				const harmonica = mediaHarmonica(numeros);
+				const geometrica = mediaGeometrica(numeros);
+				
+				document.querySelector('#harmonica').innerText = harmonica;
+				document.querySelector('#geometrica').innerText = geometrica;
+				
+				const resultado = document.querySelector('.result div');
+				resultado.hidden = false;
+			});
+		</script>
+	</body>
+</html>
